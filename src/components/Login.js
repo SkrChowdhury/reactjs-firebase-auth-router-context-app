@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/UserContext';
 
 const Login = () => {
+  const { signIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
+
+    signIn(email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        form.reset();
+        navigate('/');
+      })
+      .catch((error) => console.error(error));
   };
   return (
     <div>
       <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col ">
+        <div className="hero-content flex-col">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl font-bold">Please Login now!</h1>
           </div>
@@ -22,8 +36,8 @@ const Login = () => {
                   <span className="label-text">Email</span>
                 </label>
                 <input
-                  name="email"
                   type="email"
+                  name="email"
                   placeholder="email"
                   className="input input-bordered"
                   required
@@ -34,8 +48,8 @@ const Login = () => {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  name="password"
                   type="password"
+                  name="password"
                   placeholder="password"
                   className="input input-bordered"
                   required
